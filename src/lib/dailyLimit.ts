@@ -1,6 +1,6 @@
 const LIMIT_KEY = "voltron_daily_limit";
 const CONFIG_KEY = "voltron_daily_config";
-const DEFAULT_LIMIT = parseInt(import.meta.env.VITE_DEFAULT_DAILY_LIMIT || "10", 10);
+const DEFAULT_LIMIT = parseInt(import.meta.env['VITE_DEFAULT_DAILY_LIMIT'] || "10", 10);
 
 interface DailyConfig {
   limit: number;
