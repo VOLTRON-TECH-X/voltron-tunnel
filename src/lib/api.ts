@@ -1,5 +1,4 @@
-const API_URL = import.meta.env['VITE_API_URL'] || "https://api.voltrontechtx.shop";
-const API_KEY = import.meta.env['VITE_API_KEY'];
+import { getApiKey, getApiUrl } from "./apiConfig";
 
 export interface ApiResponse {
   success?: boolean;
