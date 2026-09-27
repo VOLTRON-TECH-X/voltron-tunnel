@@ -1,8 +1,8 @@
 const KEY = "voltron_api_config";
 
 export interface ApiConfig {
-  apiUrl?: string;
-  apiKey?: string;
+  apiUrl?: string | undefined;
+  apiKey?: string | undefined;
 }
 
 export function getApiConfig(): ApiConfig {
