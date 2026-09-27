@@ -13,6 +13,7 @@ import {
   type Account,
 } from "@/lib/api";
 import { canCreateAccount, getDailyLimit, resetDailyState, setDailyLimit } from "@/lib/dailyLimit";
+import { clearApiConfig, getApiConfig, saveApiConfig } from "@/lib/apiConfig";
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({
@@ -40,6 +41,9 @@ function Dashboard() {
   const [limitInput, setLimitInput] = useState(String(getDailyLimit()));
   const [daily, setDaily] = useState(canCreateAccount());
   const [busy, setBusy] = useState<string | null>(null);
+  const cfg = getApiConfig();
+  const [apiUrl, setApiUrl] = useState(cfg.apiUrl ?? "");
+  const [apiKey, setApiKey] = useState(cfg.apiKey ?? "");
 
   const load = useCallback(async () => {
     setLoading(true);
