@@ -1,5 +1,4 @@
-const API_URL = import.meta.env['VITE_API_URL'] || "https://api.voltrontechtx.shop";
-const API_KEY = import.meta.env['VITE_API_KEY'];
+import { getApiKey, getApiUrl } from "./apiConfig";
 
 export interface ApiResponse {
   success?: boolean;
@@ -59,21 +58,22 @@ export async function apiCall(
   method: "GET" | "POST" = "GET",
   data: any = null,
 ): Promise<ApiResponse> {
-  if (!API_KEY) {
-    return { success: false, error: "API key missing in .env" };
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    return { success: false, error: "API key missing" };
   }
 
   const options: RequestInit = {
     method,
     headers: {
       "Content-Type": "application/json",
-      "X-API-Key": API_KEY,
+      "X-API-Key": apiKey,
     },
   };
   if (data && method === "POST") options.body = JSON.stringify(data);
 
   try {
-    const res = await fetch(`${API_URL}${endpoint}`, options);
+    const res = await fetch(`${getApiUrl()}${endpoint}`, options);
     const json = await res.json();
     if (!res.ok) return { success: false, error: json.error || `HTTP ${res.status}` };
     return json;

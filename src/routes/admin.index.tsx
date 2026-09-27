@@ -13,6 +13,7 @@ import {
   type Account,
 } from "@/lib/api";
 import { canCreateAccount, getDailyLimit, resetDailyState, setDailyLimit } from "@/lib/dailyLimit";
+import { clearApiConfig, getApiConfig, saveApiConfig } from "@/lib/apiConfig";
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({
@@ -40,6 +41,9 @@ function Dashboard() {
   const [limitInput, setLimitInput] = useState(String(getDailyLimit()));
   const [daily, setDaily] = useState(canCreateAccount());
   const [busy, setBusy] = useState<string | null>(null);
+  const cfg = getApiConfig();
+  const [apiUrl, setApiUrl] = useState(cfg.apiUrl ?? "");
+  const [apiKey, setApiKey] = useState(cfg.apiKey ?? "");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -73,6 +77,21 @@ function Dashboard() {
     setDailyLimit(n);
     setDaily(canCreateAccount());
     toast.success(`Daily limit set to ${n}`);
+  };
+
+  const saveApi = () => {
+    if (apiUrl && !/^https?:\/\//.test(apiUrl)) { toast.error("API URL must start with http(s)://"); return; }
+    saveApiConfig({ apiUrl: apiUrl.trim() || undefined, apiKey: apiKey.trim() || undefined });
+    toast.success("API settings saved");
+    load();
+  };
+
+  const resetApi = () => {
+    clearApiConfig();
+    setApiUrl("");
+    setApiKey("");
+    toast.success("API settings reset to defaults");
+    load();
   };
 
   const filtered = users.filter((u) => u.username?.toLowerCase().includes(search.toLowerCase()));
@@ -141,6 +160,35 @@ function Dashboard() {
           >
             Reset counter
           </button>
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-border bg-card p-4">
+        <h2 className="mb-1 font-display font-semibold">API settings</h2>
+        <p className="mb-3 text-xs text-muted-foreground">
+          Override the server connection. Leave blank to use the defaults.
+        </p>
+        <div className="flex flex-col gap-2">
+          <input
+            placeholder="API URL (e.g. https://api.voltrontechtx.shop)"
+            value={apiUrl}
+            onChange={(e) => setApiUrl(e.target.value)}
+            className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+          />
+          <input
+            placeholder="API Key"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+          />
+          <div className="flex gap-2">
+            <button onClick={saveApi} className="rounded-lg bg-admin px-4 py-2 text-sm text-admin-foreground">
+              Save
+            </button>
+            <button onClick={resetApi} className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-secondary">
+              Reset to defaults
+            </button>
+          </div>
         </div>
       </section>
 
