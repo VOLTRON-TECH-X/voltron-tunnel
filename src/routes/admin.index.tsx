@@ -79,6 +79,21 @@ function Dashboard() {
     toast.success(`Daily limit set to ${n}`);
   };
 
+  const saveApi = () => {
+    if (apiUrl && !/^https?:\/\//.test(apiUrl)) { toast.error("API URL must start with http(s)://"); return; }
+    saveApiConfig({ apiUrl: apiUrl.trim() || undefined, apiKey: apiKey.trim() || undefined });
+    toast.success("API settings saved");
+    load();
+  };
+
+  const resetApi = () => {
+    clearApiConfig();
+    setApiUrl("");
+    setApiKey("");
+    toast.success("API settings reset to defaults");
+    load();
+  };
+
   const filtered = users.filter((u) => u.username?.toLowerCase().includes(search.toLowerCase()));
   const session = getAdminSession();
 
