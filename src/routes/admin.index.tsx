@@ -45,7 +45,7 @@ function Dashboard() {
     setLoading(true);
     const [u, d] = await Promise.all([getAllUsers(), getDashboardInfo()]);
     if (u.error) toast.error(`Users: ${u.error}`);
-    setUsers(u.users ?? (Array.isArray(u.data) ? u.data : []));
+    setUsers(u.users ?? (Array.isArray(u['data']) ? u['data'] : []));
     if (!d.error) setInfo((d.info ?? d) as Record<string, unknown>);
     setDaily(canCreateAccount());
     setLoading(false);
@@ -69,7 +69,7 @@ function Dashboard() {
 
   const saveLimit = () => {
     const n = parseInt(limitInput, 10);
-    if (!n || n < 1 || n > 1000) return toast.error("Limit must be 1–1000");
+    if (!n || n < 1 || n > 1000) { toast.error("Limit must be 1–1000"); return; }
     setDailyLimit(n);
     setDaily(canCreateAccount());
     toast.success(`Daily limit set to ${n}`);

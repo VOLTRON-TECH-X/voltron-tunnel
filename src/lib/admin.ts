@@ -1,5 +1,5 @@
-const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME || "Admin";
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || "@Voltron0120";
+const ADMIN_USERNAME = import.meta.env['VITE_ADMIN_USERNAME'] || "Admin";
+const ADMIN_PASSWORD = import.meta.env['VITE_ADMIN_PASSWORD'] || "@Voltron0120";
 const SESSION_KEY = "voltron_admin_session";
 const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
