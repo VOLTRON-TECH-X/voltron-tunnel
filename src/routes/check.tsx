@@ -9,12 +9,12 @@ import { getAccountStatus, type Account } from "@/lib/api";
 export const Route = createFileRoute("/check")({
   head: () => ({
     meta: [
-      { title: "Check Account Status — Voltron VPN" },
+      { title: "Check Account Status — Voltron Tunnel" },
       {
         name: "description",
-        content: "Look up your Voltron VPN account status, expiry date and days remaining.",
+        content: "Look up your Voltron Tunnel account status, expiry date and days remaining.",
       },
-      { property: "og:title", content: "Check Account Status — Voltron VPN" },
+      { property: "og:title", content: "Check Account Status — Voltron Tunnel" },
       { property: "og:description", content: "Check expiry, days left and online devices." },
     ],
   }),

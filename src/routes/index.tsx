@@ -5,13 +5,13 @@ import Footer from "@/components/Footer";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Voltron VPN — Free Trial VPN Accounts in Seconds" },
+      { title: "Voltron Tunnel — Free Trial VPN Accounts in Seconds" },
       {
         name: "description",
         content:
-          "Get a free Voltron VPN trial account for 1, 3 or 7 days. SSH, DNSTT and more with unlimited bandwidth.",
+          "Get a free Voltron Tunnel trial account for 1, 3 or 7 days. SSH, DNSTT and more with unlimited bandwidth.",
       },
-      { property: "og:title", content: "Voltron VPN — Free Trial VPN Accounts" },
+      { property: "og:title", content: "Voltron Tunnel — Free Trial VPN Accounts" },
       {
         property: "og:description",
         content: "Create your free VPN account in seconds. Multi-protocol, unlimited bandwidth.",
@@ -35,15 +35,25 @@ function Home() {
       <main>
         <section className="relative overflow-hidden">
           <div className="pointer-events-none absolute inset-0 glow-panel" />
-          <div className="relative mx-auto max-w-6xl px-4 py-20 text-center sm:py-28">
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-4 py-1.5 text-xs text-muted-foreground">
-              🟢 Live servers · Free trials available
+          <div className="relative mx-auto max-w-6xl px-4 py-16 text-center sm:py-24">
+            <div className="relative mx-auto mb-8 size-40 sm:size-52">
+              <div className="animate-pulse-glow absolute inset-0 rounded-full gradient-brand opacity-30 blur-3xl" />
+              <div className="animate-float absolute inset-0 grid place-items-center">
+                <span className="animate-spin-slow inline-block text-8xl drop-shadow-[0_0_35px_oklch(0.62_0.23_300/0.6)] sm:text-9xl">
+                  🌍
+                </span>
+              </div>
+              <div className="animate-spin-slow absolute -inset-3 rounded-full border border-dashed border-primary/40" />
+            </div>
+            <span className="glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs text-muted-foreground">
+              <span className="size-2 rounded-full bg-success animate-pulse" />
+              Live servers · Free trials available
             </span>
-            <h1 className="mt-6 font-display text-4xl font-bold sm:text-6xl">
-              <span className="gradient-text">🌍 Voltron VPN</span>
+            <h1 className="mt-6 font-display text-5xl font-bold tracking-tight sm:text-7xl">
+              <span className="gradient-text">Voltron Tunnel</span>
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
-              Get your free VPN account in seconds
+              Get your free VPN account in seconds — fast, secure, unlimited bandwidth.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
@@ -54,10 +64,22 @@ function Home() {
               </Link>
               <Link
                 to="/check"
-                className="rounded-xl border border-border bg-card/60 px-7 py-3.5 font-semibold transition-transform hover:scale-105"
+                className="glass rounded-xl px-7 py-3.5 font-semibold transition-transform hover:scale-105"
               >
                 🔎 Check Status
               </Link>
+            </div>
+            <div className="mx-auto mt-12 grid max-w-lg grid-cols-3 gap-3">
+              {[
+                { v: "5s", l: "Setup time" },
+                { v: "∞", l: "Bandwidth" },
+                { v: "24/7", l: "Online" },
+              ].map((s) => (
+                <div key={s.l} className="glass rounded-2xl px-4 py-3">
+                  <p className="font-display text-2xl font-bold gradient-text">{s.v}</p>
+                  <p className="text-xs text-muted-foreground">{s.l}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>

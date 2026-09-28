@@ -11,12 +11,12 @@ import { saveLastAccount } from "@/lib/accountStore";
 export const Route = createFileRoute("/create")({
   head: () => ({
     meta: [
-      { title: "Create Free VPN Account — Voltron VPN" },
+      { title: "Create Free VPN Account — Voltron Tunnel" },
       {
         name: "description",
-        content: "Create a free Voltron VPN trial account for 1, 3 or 7 days. Instant configs.",
+        content: "Create a free Voltron Tunnel trial account for 1, 3 or 7 days. Instant configs.",
       },
-      { property: "og:title", content: "Create Free VPN Account — Voltron VPN" },
+      { property: "og:title", content: "Create Free VPN Account — Voltron Tunnel" },
       { property: "og:description", content: "Pick a username and get your VPN configs instantly." },
     ],
   }),

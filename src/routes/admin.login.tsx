@@ -6,10 +6,10 @@ import { adminLogin, isAdminLoggedIn } from "@/lib/admin";
 export const Route = createFileRoute("/admin/login")({
   head: () => ({
     meta: [
-      { title: "Admin Login — Voltron VPN" },
-      { name: "description", content: "Sign in to the Voltron VPN admin panel." },
-      { property: "og:title", content: "Admin Login — Voltron VPN" },
-      { property: "og:description", content: "Sign in to the Voltron VPN admin panel." },
+      { title: "Admin Login — Voltron Tunnel" },
+      { name: "description", content: "Sign in to the Voltron Tunnel admin panel." },
+      { property: "og:title", content: "Admin Login — Voltron Tunnel" },
+      { property: "og:description", content: "Sign in to the Voltron Tunnel admin panel." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -44,7 +44,7 @@ function AdminLogin() {
         <div className="text-center">
           <div className="mx-auto mb-3 grid size-12 place-items-center rounded-xl bg-admin text-2xl">🛡️</div>
           <h1 className="font-display text-2xl font-bold">Admin Login</h1>
-          <p className="text-sm text-muted-foreground">Voltron VPN control panel</p>
+          <p className="text-sm text-muted-foreground">Voltron Tunnel control panel</p>
         </div>
         <input
           className="w-full rounded-lg border border-input bg-background px-3 py-2"

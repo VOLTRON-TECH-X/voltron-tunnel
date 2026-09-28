@@ -11,12 +11,12 @@ import { canCreateAccount } from "@/lib/dailyLimit";
 export const Route = createFileRoute("/account")({
   head: () => ({
     meta: [
-      { title: "Your VPN Account — Voltron VPN" },
+      { title: "Your VPN Account — Voltron Tunnel" },
       {
         name: "description",
-        content: "View your Voltron VPN trial account details and copy protocol configurations.",
+        content: "View your Voltron Tunnel trial account details and copy protocol configurations.",
       },
-      { property: "og:title", content: "Your VPN Account — Voltron VPN" },
+      { property: "og:title", content: "Your VPN Account — Voltron Tunnel" },
       { property: "og:description", content: "Account details and ready-to-use protocol configs." },
     ],
   }),
@@ -38,7 +38,7 @@ function AccountPage() {
     if (!data) return;
     const a = data.account;
     const lines = [
-      "=== Voltron VPN Account ===",
+      "=== Voltron Tunnel Account ===",
       `Username: ${a.username}`,
       `Password: ${a.password ?? ""}`,
       `Expiry: ${a.expiry}`,
