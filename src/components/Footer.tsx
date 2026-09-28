@@ -4,7 +4,7 @@ export function Footer() {
   return (
     <footer className="mt-20 border-t border-border/70 bg-card/40">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 py-10 text-center">
-        <p className="font-display text-lg font-semibold gradient-text">Voltron VPN</p>
+        <p className="font-display text-lg font-semibold gradient-text">Voltron Tunnel</p>
         <p className="max-w-md text-sm text-muted-foreground">
           Fast, free trial VPN accounts. Multi-protocol support with unlimited bandwidth.
         </p>

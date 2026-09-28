@@ -78,10 +78,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Voltron VPN — Free Trial VPN Accounts" },
+      { title: "Voltron Tunnel — Free Trial VPN Accounts" },
       {
         name: "description",
-        content: "Create a free Voltron VPN trial account in seconds. Multi-protocol, unlimited bandwidth.",
+        content: "Create a free Voltron Tunnel trial account in seconds. Multi-protocol, unlimited bandwidth.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

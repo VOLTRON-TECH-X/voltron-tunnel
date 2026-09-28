@@ -5,13 +5,13 @@ import Footer from "@/components/Footer";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Voltron VPN — Free Trial VPN Accounts in Seconds" },
+      { title: "Voltron Tunnel — Free Trial VPN Accounts in Seconds" },
       {
         name: "description",
         content:
-          "Get a free Voltron VPN trial account for 1, 3 or 7 days. SSH, DNSTT and more with unlimited bandwidth.",
+          "Get a free Voltron Tunnel trial account for 1, 3 or 7 days. SSH, DNSTT and more with unlimited bandwidth.",
       },
-      { property: "og:title", content: "Voltron VPN — Free Trial VPN Accounts" },
+      { property: "og:title", content: "Voltron Tunnel — Free Trial VPN Accounts" },
       {
         property: "og:description",
         content: "Create your free VPN account in seconds. Multi-protocol, unlimited bandwidth.",
@@ -40,7 +40,7 @@ function Home() {
               🟢 Live servers · Free trials available
             </span>
             <h1 className="mt-6 font-display text-4xl font-bold sm:text-6xl">
-              <span className="gradient-text">🌍 Voltron VPN</span>
+              <span className="gradient-text">🌍 Voltron Tunnel</span>
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
               Get your free VPN account in seconds

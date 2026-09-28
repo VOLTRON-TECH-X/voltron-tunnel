@@ -14,7 +14,7 @@ export function Navbar() {
           <span className="grid size-9 place-items-center rounded-xl gradient-brand text-base shadow-glow">
             🌍
           </span>
-          <span className="gradient-text">Voltron VPN</span>
+          <span className="gradient-text">Voltron Tunnel</span>
         </Link>
         <div className="flex items-center gap-1 text-sm">
           {links.map((l) => (

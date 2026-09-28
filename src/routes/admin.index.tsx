@@ -18,10 +18,10 @@ import { clearApiConfig, getApiConfig, saveApiConfig } from "@/lib/apiConfig";
 export const Route = createFileRoute("/admin/")({
   head: () => ({
     meta: [
-      { title: "Admin Dashboard — Voltron VPN" },
-      { name: "description", content: "Manage Voltron VPN users and daily limits." },
-      { property: "og:title", content: "Admin Dashboard — Voltron VPN" },
-      { property: "og:description", content: "Manage Voltron VPN users and daily limits." },
+      { title: "Admin Dashboard — Voltron Tunnel" },
+      { name: "description", content: "Manage Voltron Tunnel users and daily limits." },
+      { property: "og:title", content: "Admin Dashboard — Voltron Tunnel" },
+      { property: "og:description", content: "Manage Voltron Tunnel users and daily limits." },
       { name: "robots", content: "noindex" },
     ],
   }),
