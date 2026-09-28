@@ -30,7 +30,7 @@ export const proxyApi = createServerFn({ method: "POST" })
         body:
           data.method === "POST" && data.data != null
             ? JSON.stringify(data.data)
-            : undefined,
+            : null,
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) {
