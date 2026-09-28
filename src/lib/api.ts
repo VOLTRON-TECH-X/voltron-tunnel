@@ -1,4 +1,5 @@
 import { getApiKey, getApiUrl } from "./apiConfig";
+import { proxyApi } from "./apiProxy.functions";
 
 export interface ApiResponse {
   success?: boolean;
@@ -63,19 +64,11 @@ export async function apiCall(
     return { success: false, error: "API key missing" };
   }
 
-  const options: RequestInit = {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-Key": apiKey,
-    },
-  };
-  if (data && method === "POST") options.body = JSON.stringify(data);
-
   try {
-    const res = await fetch(`${getApiUrl()}${endpoint}`, options);
-    const json = await res.json();
-    if (!res.ok) return { success: false, error: json.error || `HTTP ${res.status}` };
+    // Calls go through a server-side proxy to avoid browser CORS blocks.
+    const json = (await proxyApi({
+      data: { endpoint, method, data, apiUrl: getApiUrl(), apiKey },
+    })) as ApiResponse;
     return json;
   } catch (e: any) {
     console.error("[api]", endpoint, e);
