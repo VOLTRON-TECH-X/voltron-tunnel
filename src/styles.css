@@ -128,3 +128,50 @@
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
 }
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@utility animate-spin-slow {
+  animation: spin-slow 14s linear infinite;
+}
+
+@utility animate-float {
+  animation: float-y 5s ease-in-out infinite;
+}
+
+@utility animate-pulse-glow {
+  animation: pulse-glow 3.5s ease-in-out infinite;
+}
+
+@utility glass {
+  background: oklch(0.21 0.035 285 / 0.55);
+  backdrop-filter: blur(14px);
+  border: 1px solid oklch(0.4 0.06 290 / 0.5);
+}

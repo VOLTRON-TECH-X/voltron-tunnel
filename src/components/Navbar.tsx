@@ -11,8 +11,8 @@ export function Navbar() {
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur-xl">
       <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
         <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold">
-          <span className="grid size-9 place-items-center rounded-xl gradient-brand text-base shadow-glow">
-            🌍
+          <span className="relative grid size-9 place-items-center rounded-xl gradient-brand text-base shadow-glow">
+            <span className="animate-spin-slow inline-block">🌍</span>
           </span>
           <span className="gradient-text">Voltron Tunnel</span>
         </Link>
