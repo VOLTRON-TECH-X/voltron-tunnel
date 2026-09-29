@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Trial-duration availability is stored through `src/lib/durationConfig.ts`; keep all public duration selectors synchronized through that module so admin choices stay consistent in the same browser.
