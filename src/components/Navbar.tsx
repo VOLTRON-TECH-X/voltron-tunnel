@@ -9,20 +9,22 @@ const links = [
 export function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur-xl">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-        <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold">
-          <span className="relative grid size-9 place-items-center rounded-xl gradient-brand text-base shadow-glow">
-            <span className="animate-spin-slow inline-block">🌍</span>
-          </span>
-          <span className="gradient-text">Voltron Tunnel</span>
+      <nav className="relative mx-auto flex max-w-6xl flex-col items-center px-3 py-3 sm:flex-row sm:justify-end sm:px-4">
+        <Link
+          to="/"
+          aria-label="Voltron Tunnel home"
+          className="brand-shine whitespace-nowrap font-display text-lg font-bold sm:absolute sm:left-1/2 sm:-translate-x-1/2 sm:text-xl"
+        >
+          <span className="brand-heartbeat inline-block gradient-text">Voltron Tunnel</span>
+          <span aria-hidden="true" className="brand-shine-sweep" />
         </Link>
-        <div className="flex items-center gap-1 text-sm">
+        <div className="mt-2 flex items-center gap-0.5 text-xs sm:mt-0 sm:gap-1 sm:text-sm">
           {links.map((l) => (
             <Link
               key={l.to}
               to={l.to}
               activeOptions={{ exact: l.to === "/" }}
-              className="rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              className={`${l.to === "/" ? "hidden sm:block" : ""} rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground sm:px-3`}
               activeProps={{ className: "bg-secondary text-foreground" }}
             >
               {l.label}

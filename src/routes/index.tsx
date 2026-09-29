@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { getEnabledDurations, type TrialDuration } from "@/lib/durationConfig";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -16,6 +18,8 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "Create your free VPN account in seconds. Multi-protocol, unlimited bandwidth.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Home,
@@ -29,28 +33,37 @@ const features = [
 ];
 
 function Home() {
+  const [durations, setDurations] = useState<TrialDuration[]>([1, 3, 7]);
+
+  useEffect(() => {
+    const sync = () => setDurations(getEnabledDurations());
+    sync();
+    window.addEventListener("storage", sync);
+    window.addEventListener("voltron-duration-change", sync);
+    return () => {
+      window.removeEventListener("storage", sync);
+      window.removeEventListener("voltron-duration-change", sync);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen">
-      <Navbar />
-      <main>
-        <section className="relative overflow-hidden">
+      <div aria-hidden="true" className="globe-backdrop">
+        <span className="animate-spin-slow block text-[16rem] leading-none sm:text-[28rem]">🌐</span>
+      </div>
+      <div className="page-layer">
+       <Navbar />
+       <main>
+        <section className="relative overflow-hidden border-b border-border/50">
           <div className="pointer-events-none absolute inset-0 glow-panel" />
           <div className="relative mx-auto max-w-6xl px-4 py-16 text-center sm:py-24">
-            <div className="relative mx-auto mb-8 size-40 sm:size-52">
-              <div className="animate-pulse-glow absolute inset-0 rounded-full gradient-brand opacity-30 blur-3xl" />
-              <div className="animate-float absolute inset-0 grid place-items-center">
-                <span className="animate-spin-slow inline-block text-8xl drop-shadow-[0_0_35px_oklch(0.62_0.23_300/0.6)] sm:text-9xl">
-                  🌍
-                </span>
-              </div>
-              <div className="animate-spin-slow absolute -inset-3 rounded-full border border-dashed border-primary/40" />
-            </div>
             <span className="glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs text-muted-foreground">
               <span className="size-2 rounded-full bg-success animate-pulse" />
               Live servers · Free trials available
             </span>
-            <h1 className="mt-6 font-display text-5xl font-bold tracking-tight sm:text-7xl">
+            <h1 className="brand-heartbeat brand-shine mx-auto mt-7 w-fit font-display text-5xl font-bold sm:text-7xl">
               <span className="gradient-text">Voltron Tunnel</span>
+              <span aria-hidden="true" className="brand-shine-sweep" />
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
               Get your free VPN account in seconds — fast, secure, unlimited bandwidth.
@@ -84,7 +97,7 @@ function Home() {
           </div>
         </section>
 
-        <section className="mx-auto grid max-w-6xl gap-4 px-4 sm:grid-cols-2 lg:grid-cols-4">
+        <section className="mx-auto grid max-w-6xl gap-4 px-4 py-14 sm:grid-cols-2 lg:grid-cols-4">
           {features.map((f) => (
             <div key={f.title} className="surface p-6 transition-transform hover:scale-[1.02]">
               <span className="text-2xl">{f.icon}</span>
@@ -94,14 +107,14 @@ function Home() {
           ))}
         </section>
 
-        <section className="mx-auto mt-16 max-w-3xl px-4">
-          <div className="surface p-8 text-center">
-            <h2 className="font-display text-2xl font-bold">Choose 1, 3 or 7 days</h2>
+        <section className="mx-auto max-w-3xl px-4 pb-16">
+          <div className="glass rounded-xl p-8 text-center shadow-card">
+            <h2 className="font-display text-2xl font-bold">Choose your free trial</h2>
             <p className="mt-2 text-sm text-muted-foreground">
               Pick a trial length, choose a username, and your configuration is generated instantly.
             </p>
             <div className="mt-6 flex justify-center gap-3">
-              {[1, 3, 7].map((d) => (
+              {durations.map((d) => (
                 <div key={d} className="rounded-xl border border-border bg-secondary/50 px-6 py-4">
                   <p className="font-display text-2xl font-bold gradient-text">{d}</p>
                   <p className="text-xs text-muted-foreground">{d === 1 ? "day" : "days"}</p>
@@ -110,8 +123,9 @@ function Home() {
             </div>
           </div>
         </section>
-      </main>
-      <Footer />
+       </main>
+       <Footer />
+      </div>
     </div>
   );
 }

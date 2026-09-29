@@ -14,6 +14,12 @@ import {
 } from "@/lib/api";
 import { canCreateAccount, getDailyLimit, resetDailyState, setDailyLimit } from "@/lib/dailyLimit";
 import { clearApiConfig, getApiConfig, saveApiConfig } from "@/lib/apiConfig";
+import {
+  getEnabledDurations,
+  setEnabledDurations,
+  TRIAL_DURATIONS,
+  type TrialDuration,
+} from "@/lib/durationConfig";
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({
@@ -22,6 +28,8 @@ export const Route = createFileRoute("/admin/")({
       { name: "description", content: "Manage Voltron Tunnel users and daily limits." },
       { property: "og:title", content: "Admin Dashboard — Voltron Tunnel" },
       { property: "og:description", content: "Manage Voltron Tunnel users and daily limits." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -44,6 +52,7 @@ function Dashboard() {
   const cfg = getApiConfig();
   const [apiUrl, setApiUrl] = useState(cfg.apiUrl ?? "");
   const [apiKey, setApiKey] = useState(cfg.apiKey ?? "");
+  const [durations, setDurations] = useState<TrialDuration[]>(() => getEnabledDurations());
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -92,6 +101,20 @@ function Dashboard() {
     setApiKey("");
     toast.success("API settings reset to defaults");
     load();
+  };
+
+  const toggleDuration = (duration: TrialDuration) => {
+    const next = durations.includes(duration)
+      ? durations.filter((item) => item !== duration)
+      : [...durations, duration].sort((a, b) => a - b);
+
+    if (!setEnabledDurations(next)) {
+      toast.error("Keep at least one duration enabled");
+      return;
+    }
+
+    setDurations(next);
+    toast.success(`${duration}-day duration ${next.includes(duration) ? "enabled" : "disabled"}`);
   };
 
   const filtered = users.filter((u) => u.username?.toLowerCase().includes(search.toLowerCase()));
@@ -160,6 +183,35 @@ function Dashboard() {
           >
             Reset counter
           </button>
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-border bg-card p-4">
+        <h2 className="font-display font-semibold">Trial durations</h2>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Disabled choices are hidden from the account creation page.
+        </p>
+        <div className="mt-4 grid grid-cols-3 gap-3">
+          {TRIAL_DURATIONS.map((duration) => {
+            const enabled = durations.includes(duration);
+            return (
+              <button
+                key={duration}
+                type="button"
+                role="switch"
+                aria-checked={enabled}
+                onClick={() => toggleDuration(duration)}
+                className={`flex items-center justify-between rounded-lg border px-3 py-3 text-sm transition-colors ${
+                  enabled ? "border-admin bg-admin/15 text-foreground" : "border-border bg-secondary/30 text-muted-foreground"
+                }`}
+              >
+                <span>{duration} {duration === 1 ? "day" : "days"}</span>
+                <span className={`relative h-5 w-9 rounded-full ${enabled ? "bg-admin" : "bg-muted"}`}>
+                  <span className={`absolute top-0.5 size-4 rounded-full bg-background transition-transform ${enabled ? "left-[1.125rem]" : "left-0.5"}`} />
+                </span>
+              </button>
+            );
+          })}
         </div>
       </section>
 

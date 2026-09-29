@@ -42,7 +42,7 @@ export function ProtocolCard({ protocol }: { protocol: Protocol }) {
   };
 
   return (
-    <div className="surface p-5">
+    <article className="surface min-w-0 p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <span
@@ -63,15 +63,15 @@ export function ProtocolCard({ protocol }: { protocol: Protocol }) {
           {copied ? "✅ Copied" : "📋 Copy"}
         </button>
       </div>
-      <dl className="mt-4 space-y-1.5 text-sm">
+      <dl className="mt-5 space-y-3 text-sm">
         {data.map(([k, v]) => (
-          <div key={k} className="flex items-start justify-between gap-3 border-b border-border/50 pb-1.5">
-            <dt className="text-muted-foreground">{k}</dt>
-            <dd className="max-w-[60%] truncate font-mono text-right text-xs">{v}</dd>
+          <div key={k} className="min-w-0 border-b border-border/50 pb-3 last:border-0 last:pb-0">
+            <dt className="mb-1 text-[0.7rem] font-semibold uppercase text-muted-foreground">{k}</dt>
+            <dd className="min-w-0 whitespace-pre-wrap break-all font-mono text-xs leading-relaxed text-foreground">{v}</dd>
           </div>
         ))}
       </dl>
-    </div>
+    </article>
   );
 }
 
