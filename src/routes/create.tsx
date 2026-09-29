@@ -7,6 +7,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { checkUsername, createAccount } from "@/lib/api";
 import { canCreateAccount, incrementDailyCount } from "@/lib/dailyLimit";
 import { saveLastAccount } from "@/lib/accountStore";
+import { getEnabledDurations, type TrialDuration } from "@/lib/durationConfig";
 
 export const Route = createFileRoute("/create")({
   head: () => ({
@@ -18,6 +19,8 @@ export const Route = createFileRoute("/create")({
       },
       { property: "og:title", content: "Create Free VPN Account — Voltron Tunnel" },
       { property: "og:description", content: "Pick a username and get your VPN configs instantly." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: CreatePage,
@@ -32,7 +35,8 @@ function CreatePage() {
   const [limitInfo, setLimitInfo] = useState<ReturnType<typeof canCreateAccount> | null>(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [days, setDays] = useState(1);
+  const [days, setDays] = useState<TrialDuration>(1);
+  const [durations, setDurations] = useState<TrialDuration[]>([1, 3, 7]);
   const [nameState, setNameState] = useState<UsernameState>("idle");
   const [nameError, setNameError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -40,6 +44,9 @@ function CreatePage() {
 
   useEffect(() => {
     setLimitInfo(canCreateAccount());
+    const enabled = getEnabledDurations();
+    setDurations(enabled);
+    setDays(enabled[0] ?? 1);
     const id = setInterval(() => setLimitInfo(canCreateAccount()), 30_000);
     return () => clearInterval(id);
   }, []);
@@ -199,7 +206,7 @@ function CreatePage() {
               <div>
                 <p className="text-sm font-medium">Duration</p>
                 <div className="mt-2 grid grid-cols-3 gap-3">
-                  {[1, 3, 7].map((d) => (
+                  {durations.map((d) => (
                     <button
                       key={d}
                       type="button"
