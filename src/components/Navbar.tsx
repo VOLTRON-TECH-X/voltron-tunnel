@@ -9,16 +9,16 @@ const links = [
 export function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur-xl">
-      <nav className="relative mx-auto flex max-w-6xl items-center justify-end px-3 py-3 sm:px-4">
+      <nav className="relative mx-auto flex max-w-6xl flex-col items-center px-3 py-3 sm:flex-row sm:justify-end sm:px-4">
         <Link
           to="/"
           aria-label="Voltron Tunnel home"
-          className="brand-heartbeat brand-shine absolute left-1/2 -translate-x-1/2 whitespace-nowrap font-display text-base font-bold sm:text-xl"
+          className="brand-shine whitespace-nowrap font-display text-lg font-bold sm:absolute sm:left-1/2 sm:-translate-x-1/2 sm:text-xl"
         >
-          <span className="gradient-text">Voltron Tunnel</span>
+          <span className="brand-heartbeat inline-block gradient-text">Voltron Tunnel</span>
           <span aria-hidden="true" className="brand-shine-sweep" />
         </Link>
-        <div className="flex items-center gap-0.5 text-xs sm:gap-1 sm:text-sm">
+        <div className="mt-2 flex items-center gap-0.5 text-xs sm:mt-0 sm:gap-1 sm:text-sm">
           {links.map((l) => (
             <Link
               key={l.to}
