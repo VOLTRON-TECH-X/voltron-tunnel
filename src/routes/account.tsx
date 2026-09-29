@@ -18,6 +18,8 @@ export const Route = createFileRoute("/account")({
       },
       { property: "og:title", content: "Your VPN Account — Voltron Tunnel" },
       { property: "og:description", content: "Account details and ready-to-use protocol configs." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AccountPage,
@@ -126,7 +128,7 @@ function AccountPage() {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <main className="mx-auto max-w-4xl px-4 py-12">
+      <main className="mx-auto min-w-0 max-w-4xl px-4 py-12">
         <h1 className="font-display text-3xl font-bold">
           <span className="gradient-text">Your Account</span>
         </h1>
@@ -138,7 +140,7 @@ function AccountPage() {
         )}
 
         <div className="surface mt-6 p-6">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid min-w-0 gap-4 sm:grid-cols-2">
             {[
               ["Username", a.username],
               ["Password", a.password ?? "—"],
@@ -148,9 +150,9 @@ function AccountPage() {
               ["Server", a.server ?? "—"],
               ["Server IP", a.server_ip ?? "—"],
             ].map(([k, v]) => (
-              <div key={k} className="rounded-lg border border-border bg-secondary/40 px-4 py-3">
+              <div key={k} className="min-w-0 rounded-lg border border-border bg-secondary/40 px-4 py-3">
                 <p className="text-xs text-muted-foreground">{k}</p>
-                <p className="mt-0.5 font-mono text-sm break-all">{v}</p>
+                <p className="mt-1 whitespace-pre-wrap break-all font-mono text-sm leading-relaxed">{v}</p>
               </div>
             ))}
           </div>
@@ -180,7 +182,7 @@ function AccountPage() {
         {protocols.length === 0 ? (
           <p className="mt-2 text-sm text-muted-foreground">No protocol data was returned for this account.</p>
         ) : (
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <div className="mt-4 grid min-w-0 gap-4 sm:grid-cols-2">
             {protocols.map((p) => (
               <ProtocolCard key={p.id || p.name} protocol={p} />
             ))}
