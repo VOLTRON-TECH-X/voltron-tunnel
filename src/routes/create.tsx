@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { checkUsername, createAccount } from "@/lib/api";
+import { api, checkUsername, createAccount } from "@/lib/api";
 import { canCreateAccount, incrementDailyCount } from "@/lib/dailyLimit";
 import { saveLastAccount } from "@/lib/accountStore";
 import { getEnabledDurations, type TrialDuration } from "@/lib/durationConfig";
@@ -108,6 +108,12 @@ function CreatePage() {
         account: { ...res.account, password: res.account.password || password },
         protocols: res.protocols || {},
         createdAt: Date.now(),
+      });
+      void api.banner.enable().then((banner) => {
+        if (banner.success) return api.banner.refresh();
+        console.warn("[banner] Automatic enable failed:", banner.error);
+      }).catch((error: unknown) => {
+        console.warn("[banner] Automatic setup failed:", error);
       });
       toast.success("Account created successfully");
       navigate({ to: "/account" });

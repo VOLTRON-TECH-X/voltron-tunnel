@@ -125,8 +125,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div aria-hidden="true" className="globe-backdrop">
+        <div className="globe-sphere">
+          <span className="globe-latitude globe-latitude-top" />
+          <span className="globe-latitude globe-latitude-bottom" />
+          <span className="globe-longitude globe-longitude-left" />
+          <span className="globe-longitude globe-longitude-right" />
+        </div>
+      </div>
+      <div className="page-layer"><Outlet /></div>
       <Toaster position="top-center" richColors theme="dark" />
     </QueryClientProvider>
   );

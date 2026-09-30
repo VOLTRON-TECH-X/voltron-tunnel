@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import DynamicBannerCard from "@/components/admin/DynamicBannerCard";
 import { adminLogout, getAdminSession } from "@/lib/admin";
 import {
   deleteUser,
@@ -185,6 +186,8 @@ function Dashboard() {
           </button>
         </div>
       </section>
+
+      <DynamicBannerCard />
 
       <section className="rounded-xl border border-border bg-card p-4">
         <h2 className="font-display font-semibold">Trial durations</h2>

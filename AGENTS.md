@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Trial-duration availability is stored through `src/lib/durationConfig.ts`; keep all public duration selectors synchronized through that module so admin choices stay consistent in the same browser.
+- Dynamic SSH Banner operations use `src/lib/api.ts` through the existing server proxy so every request retains the configured API URL and key.
