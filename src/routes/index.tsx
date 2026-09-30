@@ -48,10 +48,6 @@ function Home() {
 
   return (
     <div className="min-h-screen">
-      <div aria-hidden="true" className="globe-backdrop">
-        <span className="animate-spin-slow block text-[16rem] leading-none sm:text-[28rem]">🌐</span>
-      </div>
-      <div className="page-layer">
        <Navbar />
        <main>
         <section className="relative overflow-hidden border-b border-border/50">
@@ -125,7 +121,6 @@ function Home() {
         </section>
        </main>
        <Footer />
-      </div>
     </div>
   );
 }

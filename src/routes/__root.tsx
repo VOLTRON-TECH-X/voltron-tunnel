@@ -6,6 +6,7 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
@@ -35,7 +36,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
@@ -125,9 +126,16 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
-      <Toaster position="top-center" richColors theme="dark" />
+      <div aria-hidden="true" className="globe-backdrop">
+        <div className="globe-sphere">
+          <span className="globe-latitude globe-latitude-top" />
+          <span className="globe-latitude globe-latitude-bottom" />
+          <span className="globe-longitude globe-longitude-left" />
+          <span className="globe-longitude globe-longitude-right" />
+        </div>
+      </div>
+      <div className="page-layer"><Outlet /></div>
+      <Toaster position="top-center" richColors theme="light" />
     </QueryClientProvider>
   );
 }
