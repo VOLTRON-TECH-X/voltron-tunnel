@@ -110,8 +110,11 @@ function CreatePage() {
         createdAt: Date.now(),
       });
       void api.banner.enable().then((banner) => {
-        if (banner.success) return api.banner.refresh();
-        console.warn("[banner] Automatic enable failed:", banner.error);
+        if (banner.success) {
+          void api.banner.refresh();
+        } else {
+          console.warn("[banner] Automatic enable failed:", banner.error);
+        }
       }).catch((error: unknown) => {
         console.warn("[banner] Automatic setup failed:", error);
       });
