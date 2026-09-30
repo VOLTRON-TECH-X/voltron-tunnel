@@ -1,5 +1,6 @@
 import { getApiKey, getApiUrl } from "./apiConfig";
 import { proxyApi } from "./apiProxy.functions";
+import type { BannerActionResponse, BannerStatus } from "@/types/api";
 
 export interface ApiResponse {
   success?: boolean;
@@ -100,3 +101,14 @@ export const unlockUser = (username: string) =>
   apiCall("/api/users/unlock", "POST", { username });
 
 export const getDashboardInfo = () => apiCall("/api/dashboard/info", "GET");
+
+export const bannerApi = {
+  status: () => apiCall("/api/banner/status", "GET") as Promise<BannerStatus>,
+  enable: () => apiCall("/api/banner/enable", "POST") as Promise<BannerActionResponse>,
+  disable: () => apiCall("/api/banner/disable", "POST") as Promise<BannerActionResponse>,
+  refresh: () => apiCall("/api/banner/refresh", "POST") as Promise<BannerActionResponse>,
+};
+
+export const api = {
+  banner: bannerApi,
+};
