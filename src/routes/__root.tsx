@@ -134,7 +134,7 @@ function RootComponent() {
         </div>
       </div>
       <div className="page-layer"><Outlet /></div>
-      <Toaster position="top-center" richColors theme="dark" />
+      <Toaster position="top-center" richColors theme="light" />
     </QueryClientProvider>
   );
 }
