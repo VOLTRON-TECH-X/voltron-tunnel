@@ -5,6 +5,7 @@ const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
 export interface AdminSession {
   username: string;
+  password?: string;
   loginAt: number;
   expiresAt: number;
 }
@@ -14,6 +15,7 @@ export function adminLogin(username: string, password: string): boolean {
     const now = Date.now();
     const session: AdminSession = {
       username,
+      password,
       loginAt: now,
       expiresAt: now + SESSION_DURATION,
     };
@@ -34,7 +36,7 @@ export function getAdminSession(): AdminSession | null {
   if (!raw) return null;
   try {
     const session: AdminSession = JSON.parse(raw);
-    if (Date.now() > session.expiresAt) {
+    if (Date.now() > session.expiresAt || !session.password) {
       localStorage.removeItem(SESSION_KEY);
       return null;
     }
@@ -46,4 +48,9 @@ export function getAdminSession(): AdminSession | null {
 
 export function isAdminLoggedIn(): boolean {
   return getAdminSession() !== null;
+}
+
+export function getAdminAuth(): { username: string; password: string } | undefined {
+  const s = getAdminSession();
+  return s?.password ? { username: s.username, password: s.password } : undefined;
 }

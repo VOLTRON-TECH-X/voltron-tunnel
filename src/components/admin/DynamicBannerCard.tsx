@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 export function DynamicBannerCard() {
   const {
     status,
+    activeUsers,
     isLoading,
     isError,
     refetch,
@@ -53,6 +54,7 @@ export function DynamicBannerCard() {
   }
 
   const enabled = status.enabled;
+  const bannerCount = activeUsers != null ? Math.min(status.banner_count, activeUsers) : status.banner_count;
   const busy = isEnabling || isDisabling || isRefreshing;
 
   return (
@@ -76,7 +78,10 @@ export function DynamicBannerCard() {
       <div className="mt-5 grid grid-cols-2 gap-3">
         <div className="rounded-lg border border-border bg-secondary/45 p-3">
           <p className="flex items-center gap-2 text-xs text-muted-foreground"><Users className="size-3.5 text-primary" /> Banners</p>
-          <p className="mt-1 font-display text-xl font-bold">{status.banner_count}</p>
+          <p className="mt-1 font-display text-xl font-bold">{bannerCount}</p>
+          {activeUsers != null && status.banner_count > activeUsers && (
+            <p className="text-[11px] text-muted-foreground">Synced with {activeUsers} live accounts</p>
+          )}
         </div>
         <div className="rounded-lg border border-border bg-secondary/45 p-3">
           <p className="flex items-center gap-2 text-xs text-muted-foreground"><Palette className="size-3.5 text-admin" /> Config</p>
