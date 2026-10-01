@@ -14,7 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      account_creations: {
+        Row: {
+          created_at: string
+          id: string
+          server_id: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          server_id: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          server_id?: string
+          username?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_creations_server_id_fkey"
+            columns: ["server_id"]
+            isOneToOne: false
+            referencedRelation: "servers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      servers: {
+        Row: {
+          api_key: string
+          api_url: string
+          bandwidth_total_gb: number | null
+          category: string
+          created_at: string
+          daily_limit: number
+          enabled: boolean
+          id: string
+          name: string
+        }
+        Insert: {
+          api_key: string
+          api_url: string
+          bandwidth_total_gb?: number | null
+          category?: string
+          created_at?: string
+          daily_limit?: number
+          enabled?: boolean
+          id?: string
+          name: string
+        }
+        Update: {
+          api_key?: string
+          api_url?: string
+          bandwidth_total_gb?: number | null
+          category?: string
+          created_at?: string
+          daily_limit?: number
+          enabled?: boolean
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
