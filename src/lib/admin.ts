@@ -36,7 +36,7 @@ export function getAdminSession(): AdminSession | null {
   if (!raw) return null;
   try {
     const session: AdminSession = JSON.parse(raw);
-    if (Date.now() > session.expiresAt) {
+    if (Date.now() > session.expiresAt || !session.password) {
       localStorage.removeItem(SESSION_KEY);
       return null;
     }
