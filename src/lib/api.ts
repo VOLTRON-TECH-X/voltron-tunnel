@@ -1,4 +1,5 @@
-import { getApiKey, getApiUrl } from "./apiConfig";
+import { getSelectedServerId } from "./apiConfig";
+import { getAdminAuth } from "./admin";
 import { proxyApi } from "./apiProxy.functions";
 import type { BannerActionResponse, BannerStatus } from "@/types/api";
 
@@ -60,15 +61,10 @@ export async function apiCall(
   method: "GET" | "POST" = "GET",
   data: any = null,
 ): Promise<ApiResponse> {
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    return { success: false, error: "API key missing" };
-  }
-
   try {
     // Calls go through a server-side proxy to avoid browser CORS blocks.
     const json = (await proxyApi({
-      data: { endpoint, method, data, apiUrl: getApiUrl(), apiKey },
+      data: { endpoint, method, data, serverId: getSelectedServerId(), auth: getAdminAuth() },
     })) as ApiResponse;
     return json;
   } catch (e: any) {
@@ -80,9 +76,6 @@ export async function apiCall(
 // Public
 export const checkUsername = (username: string) =>
   apiCall("/api/trial/check", "POST", { username });
-
-export const createAccount = (username: string, password: string, days: number) =>
-  apiCall("/api/trial/create", "POST", { username, password, days });
 
 export const getAccountStatus = (username: string) =>
   apiCall(`/api/trial/status/${username}`, "GET");
@@ -111,4 +104,5 @@ export const bannerApi = {
 
 export const api = {
   banner: bannerApi,
+  users: getAllUsers,
 };

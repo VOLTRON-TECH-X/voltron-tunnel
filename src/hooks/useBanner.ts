@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
+import { getSelectedServerId } from "@/lib/apiConfig";
 import type { BannerActionResponse, BannerStatus } from "@/types/api";
 
 function ensureStatus(data: BannerStatus) {
@@ -15,13 +16,24 @@ function actionError(data: BannerActionResponse, fallback: string) {
 export function useBanner() {
   const queryClient = useQueryClient();
   const statusQuery = useQuery({
-    queryKey: ["banner-status"],
+    queryKey: ["banner-status", getSelectedServerId()],
     queryFn: async () => ensureStatus(await api.banner.status()),
     refetchInterval: 30_000,
     staleTime: 10_000,
   });
 
-  const refreshStatus = () => queryClient.invalidateQueries({ queryKey: ["banner-status"] });
+  // Live account count — the server's banner_count can lag after deletions.
+  const usersQuery = useQuery({
+    queryKey: ["banner-users", getSelectedServerId()],
+    queryFn: async () => {
+      const r = await api.users();
+      if (r.error) return undefined;
+      return (r.users ?? (Array.isArray(r["data"]) ? r["data"] : [])).length as number;
+    },
+    refetchInterval: 30_000,
+  });
+
+  const refreshStatus = () => queryClient.invalidateQueries({ queryKey: ["banner-status"] }).then(() => queryClient.invalidateQueries({ queryKey: ["banner-users"] }));
 
   const enableMutation = useMutation({
     mutationFn: api.banner.enable,
@@ -64,6 +76,7 @@ export function useBanner() {
 
   return {
     status: statusQuery.data,
+    activeUsers: usersQuery.data,
     isLoading: statusQuery.isLoading,
     isError: statusQuery.isError,
     refetch: statusQuery.refetch,
