@@ -1,31 +1,12 @@
-const KEY = "voltron_api_config";
+// Selected server (API domain + key live on the backend; browser only knows the id).
+const KEY = "voltron_selected_server";
 
-export interface ApiConfig {
-  apiUrl?: string | undefined;
-  apiKey?: string | undefined;
+export function getSelectedServerId(): string | undefined {
+  if (typeof window === "undefined") return undefined;
+  return localStorage.getItem(KEY) || undefined;
 }
 
-export function getApiConfig(): ApiConfig {
-  if (typeof window === "undefined") return {};
-  try {
-    return JSON.parse(localStorage.getItem(KEY) || "{}");
-  } catch {
-    return {};
-  }
-}
-
-export function saveApiConfig(cfg: ApiConfig) {
-  localStorage.setItem(KEY, JSON.stringify(cfg));
-}
-
-export function clearApiConfig() {
-  localStorage.removeItem(KEY);
-}
-
-export function getApiUrl(): string {
-  return getApiConfig().apiUrl || import.meta.env["VITE_API_URL"] || "https://api.voltrontechtx.shop";
-}
-
-export function getApiKey(): string | undefined {
-  return getApiConfig().apiKey || import.meta.env["VITE_API_KEY"];
+export function setSelectedServerId(id: string) {
+  localStorage.setItem(KEY, id);
+  window.dispatchEvent(new Event("voltron-server-change"));
 }
