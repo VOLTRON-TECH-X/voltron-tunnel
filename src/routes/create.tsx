@@ -4,7 +4,9 @@ import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { api, checkUsername, createAccount } from "@/lib/api";
+import { checkUsername, type ApiResponse } from "@/lib/api";
+import { createTrial } from "@/lib/servers.functions";
+import { getSelectedServerId } from "@/lib/apiConfig";
 import { canCreateAccount, incrementDailyCount } from "@/lib/dailyLimit";
 import { saveLastAccount } from "@/lib/accountStore";
 import { getEnabledDurations, type TrialDuration } from "@/lib/durationConfig";
@@ -99,7 +101,10 @@ function CreatePage() {
       return;
     }
     setSubmitting(true);
-    const res = await createAccount(username, password, days);
+    const serverId = getSelectedServerId();
+    const res = (serverId
+      ? await createTrial({ data: { serverId, username, password, days } }).catch(() => ({ success: false, error: "Could not reach server" }))
+      : { success: false, error: "Please choose a server first" }) as ApiResponse;
     setSubmitting(false);
 
     if (res.success && res.account) {
@@ -108,15 +113,6 @@ function CreatePage() {
         account: { ...res.account, password: res.account.password || password },
         protocols: res.protocols || {},
         createdAt: Date.now(),
-      });
-      void api.banner.enable().then((banner) => {
-        if (banner.success) {
-          void api.banner.refresh();
-        } else {
-          console.warn("[banner] Automatic enable failed:", banner.error);
-        }
-      }).catch((error: unknown) => {
-        console.warn("[banner] Automatic setup failed:", error);
       });
       toast.success("Account created successfully");
       navigate({ to: "/account" });
