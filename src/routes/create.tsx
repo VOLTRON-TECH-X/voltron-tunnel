@@ -7,6 +7,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { checkUsername, type ApiResponse } from "@/lib/api";
 import { createTrial } from "@/lib/servers.functions";
 import { getSelectedServerId } from "@/lib/apiConfig";
+import { countToday, getServerById, incrementServerCount } from "@/lib/serverStore";
 import { canCreateAccount, incrementDailyCount } from "@/lib/dailyLimit";
 import { saveLastAccount } from "@/lib/accountStore";
 import { getEnabledDurations, type TrialDuration } from "@/lib/durationConfig";
@@ -107,14 +108,18 @@ function CreatePage() {
       return;
     }
     setSubmitting(true);
-    const serverId = getSelectedServerId();
-    const res = (serverId
-      ? await createTrial({ data: { serverId, username, password, days } }).catch(() => ({ success: false, error: "Could not reach server" }))
-      : { success: false, error: "Please choose a server first" }) as ApiResponse;
+    const srv = getServerById(getSelectedServerId());
+    const full = srv ? countToday(srv.id) >= srv.daily_limit : false;
+    const res = (!srv || !srv.enabled
+      ? { success: false, error: "Please choose an online server first" }
+      : full
+        ? { success: false, error: "Daily limit reached for this server" }
+        : await createTrial({ data: { server: { api_url: srv.api_url, api_key: srv.api_key }, username, password, days } }).catch(() => ({ success: false, error: "Could not reach server" }))) as ApiResponse;
     setSubmitting(false);
 
     if (res.success && res.account) {
       incrementDailyCount();
+      if (srv) incrementServerCount(srv.id);
       saveLastAccount({
         account: { ...res.account, password: res.account.password || password },
         protocols: res.protocols || {},
