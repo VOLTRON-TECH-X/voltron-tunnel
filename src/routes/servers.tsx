@@ -3,8 +3,35 @@ import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { listPublicServers, type PublicServer } from "@/lib/servers.functions";
+import { getServerInfo } from "@/lib/servers.functions";
 import { setSelectedServerId } from "@/lib/apiConfig";
+import { countToday, listServers, type LocalServer } from "@/lib/serverStore";
+import { flagEmoji, geolocate } from "@/lib/geo";
+
+type PublicServer = {
+  id: string; category: string; online: boolean; domain: string; ip: string | null;
+  country: string | null; city: string | null; flag: string;
+  bandwidthUsedGb: number | null; bandwidthTotalGb: number | null;
+  createdToday: number; dailyLimit: number; remaining: number;
+};
+
+async function describe(s: LocalServer): Promise<PublicServer> {
+  const apiHost = (() => { try { return new URL(s.api_url).hostname; } catch { return s.api_url; } })();
+  const info = s.enabled
+    ? await getServerInfo({ data: { server: { api_url: s.api_url, api_key: s.api_key } } }).catch(() => null)
+    : null;
+  const domain = info?.domain ?? apiHost.replace(/^api\./i, "");
+  // Prefer the real server IP reported by the API; otherwise resolve the server domain.
+  const geo = (info?.ip ? await geolocate(info.ip) : null) ?? (await geolocate(domain)) ?? (await geolocate(apiHost));
+  const createdToday = countToday(s.id);
+  return {
+    id: s.id, category: s.category, online: s.enabled && !!info?.reachable, domain,
+    ip: info?.ip ?? geo?.ip ?? null, country: geo?.country ?? null, city: geo?.city || geo?.region || null,
+    flag: flagEmoji(geo?.code), bandwidthUsedGb: info?.used ?? null,
+    bandwidthTotalGb: s.bandwidth_total_gb ?? info?.total ?? null,
+    createdToday, dailyLimit: s.daily_limit, remaining: Math.max(0, s.daily_limit - createdToday),
+  };
+}
 
 export const Route = createFileRoute("/servers")({
   head: () => ({
@@ -21,8 +48,8 @@ export const Route = createFileRoute("/servers")({
 });
 
 function ServersPage() {
-  const q = useQuery({ queryKey: ["public-servers"], queryFn: () => listPublicServers(), refetchInterval: 60_000 });
-  const servers = q.data?.servers ?? [];
+  const q = useQuery({ queryKey: ["public-servers"], queryFn: () => Promise.all(listServers().map(describe)), refetchInterval: 60_000 });
+  const servers = q.data ?? [];
   const groups = servers.reduce<Record<string, PublicServer[]>>((acc, s) => {
     (acc[s.category] ??= []).push(s);
     return acc;
