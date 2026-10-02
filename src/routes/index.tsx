@@ -66,7 +66,7 @@ function Home() {
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
-                to="/create"
+                to="/servers"
                 className="rounded-xl gradient-brand px-7 py-3.5 font-semibold text-primary-foreground shadow-glow transition-transform hover:scale-105"
               >
                 🚀 Create Free Account

@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as CheckRouteImport } from './routes/check'
 import { Route as CreateRouteImport } from './routes/create'
+import { Route as ServersRouteImport } from './routes/servers'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 
@@ -36,6 +37,11 @@ const CreateRoute = CreateRouteImport.update({
   path: '/create',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServersRoute = ServersRouteImport.update({
+  id: '/servers',
+  path: '/servers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/check': typeof CheckRoute
   '/create': typeof CreateRoute
+  '/servers': typeof ServersRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/check': typeof CheckRoute
   '/create': typeof CreateRoute
+  '/servers': typeof ServersRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin': typeof AdminIndexRoute
 }
@@ -69,21 +77,36 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/check': typeof CheckRoute
   '/create': typeof CreateRoute
+  '/servers': typeof ServersRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/account' | '/check' | '/create' | '/admin/login' | '/admin/'
+    | '/'
+    | '/account'
+    | '/check'
+    | '/create'
+    | '/servers'
+    | '/admin/login'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/account' | '/check' | '/create' | '/admin/login' | '/admin'
+  to:
+    | '/'
+    | '/account'
+    | '/check'
+    | '/create'
+    | '/servers'
+    | '/admin/login'
+    | '/admin'
   id:
     | '__root__'
     | '/'
     | '/account'
     | '/check'
     | '/create'
+    | '/servers'
     | '/admin/login'
     | '/admin/'
   fileRoutesById: FileRoutesById
@@ -93,6 +116,7 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   CheckRoute: typeof CheckRoute
   CreateRoute: typeof CreateRoute
+  ServersRoute: typeof ServersRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -127,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/servers': {
+      id: '/servers'
+      path: '/servers'
+      fullPath: '/servers'
+      preLoaderRoute: typeof ServersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/admin'
@@ -149,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   CheckRoute: CheckRoute,
   CreateRoute: CreateRoute,
+  ServersRoute: ServersRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
