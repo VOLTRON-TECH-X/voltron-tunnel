@@ -3,16 +3,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Pencil, Plus, Server, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { getAdminAuth } from "@/lib/admin";
 import { getSelectedServerId, setSelectedServerId } from "@/lib/apiConfig";
-import {
-  adminDeleteServer,
-  adminListServers,
-  adminSaveServer,
-  adminToggleServer,
-} from "@/lib/servers.functions";
+import { deleteServer, listServers, saveServer, toggleServer, type LocalServer } from "@/lib/serverStore";
 
-type Row = Awaited<ReturnType<typeof adminListServers>>[number];
+type Row = LocalServer;
 const empty = { name: "", category: "Premium", api_url: "", api_key: "", daily_limit: "10", bandwidth_total_gb: "" };
 
 export function ServersManager({ onSelect }: { onSelect: () => void }) {
@@ -21,23 +15,17 @@ export function ServersManager({ onSelect }: { onSelect: () => void }) {
   const [form, setForm] = useState(empty);
   const [editId, setEditId] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | undefined>();
-  const [saving, setSaving] = useState(false);
+  const [saving] = useState(false);
 
-  const load = useCallback(async () => {
-    const auth = getAdminAuth();
-    if (!auth) return;
-    try {
-      const r = await adminListServers({ data: { auth } });
-      setRows(r);
-      const cur = getSelectedServerId();
-      if (r.length && !r.some((s) => s.id === cur)) setSelectedServerId(r[0]!.id);
-      setSelected(getSelectedServerId());
-    } catch {
-      toast.error("Could not load servers");
-    }
+  const load = useCallback(() => {
+    const r = listServers();
+    setRows(r);
+    const cur = getSelectedServerId();
+    if (r.length && !r.some((s) => s.id === cur)) setSelectedServerId(r[0]!.id);
+    setSelected(getSelectedServerId());
   }, []);
 
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => { load(); }, [load]);
 
   const choose = (id: string) => {
     setSelectedServerId(id);
@@ -46,41 +34,30 @@ export function ServersManager({ onSelect }: { onSelect: () => void }) {
     onSelect();
   };
 
-  const save = async () => {
-    const auth = getAdminAuth();
-    if (!auth) return;
+  const save = () => {
     if (!/^https?:\/\//.test(form.api_url)) { toast.error("API domain must start with https://"); return; }
-    setSaving(true);
-    try {
-      const r = await adminSaveServer({
-        data: {
-          auth,
-          server: {
-            ...(editId ? { id: editId } : {}),
-            name: form.name, category: form.category, api_url: form.api_url, api_key: form.api_key,
-            daily_limit: parseInt(form.daily_limit, 10) || 10,
-            bandwidth_total_gb: form.bandwidth_total_gb ? parseFloat(form.bandwidth_total_gb) : null,
-          },
-        },
-      });
-      if (!r.success) toast.error(r.error || "Save failed");
-      else { toast.success(editId ? "Server updated" : "Server added"); setForm(empty); setEditId(null); void load(); }
-    } catch { toast.error("Check all fields and try again"); }
-    setSaving(false);
+    saveServer({
+      id: editId ?? undefined,
+      name: form.name.trim(), category: form.category.trim() || "Premium",
+      api_url: form.api_url.trim(), api_key: form.api_key.trim(),
+      daily_limit: parseInt(form.daily_limit, 10) || 10,
+      bandwidth_total_gb: form.bandwidth_total_gb ? parseFloat(form.bandwidth_total_gb) : null,
+    });
+    toast.success(editId ? "Server updated" : "Server added");
+    setForm(empty); setEditId(null); load();
   };
 
-  const toggle = async (s: Row) => {
-    const auth = getAdminAuth(); if (!auth) return;
-    const r = await adminToggleServer({ data: { auth, id: s.id, enabled: !s.enabled } });
-    if (r.success) { toast.success(`${s.name} is now ${s.enabled ? "offline" : "online"}`); void load(); }
-    else toast.error(r.error || "Failed");
+  const toggle = (s: Row) => {
+    toggleServer(s.id, !s.enabled);
+    toast.success(`${s.name} is now ${s.enabled ? "offline" : "online"}`);
+    load();
   };
 
-  const remove = async (s: Row) => {
+  const remove = (s: Row) => {
     if (!confirm(`Delete server ${s.name}?`)) return;
-    const auth = getAdminAuth(); if (!auth) return;
-    const r = await adminDeleteServer({ data: { auth, id: s.id } });
-    if (r.success) { toast.success("Server deleted"); void load(); } else toast.error(r.error || "Failed");
+    deleteServer(s.id);
+    toast.success("Server deleted");
+    load();
   };
 
   const categories = Array.from(new Set(rows.map((r) => r.category)));
