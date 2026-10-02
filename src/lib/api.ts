@@ -1,4 +1,4 @@
-import { getSelectedServerId } from "./apiConfig";
+import { getSelectedServer } from "./serverStore";
 import { getAdminAuth } from "./admin";
 import { proxyApi } from "./apiProxy.functions";
 import type { BannerActionResponse, BannerStatus } from "@/types/api";
@@ -63,8 +63,9 @@ export async function apiCall(
 ): Promise<ApiResponse> {
   try {
     // Calls go through a server-side proxy to avoid browser CORS blocks.
+    const s = getSelectedServer();
     const json = (await proxyApi({
-      data: { endpoint, method, data, serverId: getSelectedServerId(), auth: getAdminAuth() },
+      data: { endpoint, method, data, ...(s ? { server: { api_url: s.api_url, api_key: s.api_key } } : {}) },
     })) as ApiResponse;
     return json;
   } catch (e: any) {
