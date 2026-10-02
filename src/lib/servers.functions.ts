@@ -31,12 +31,16 @@ export interface PublicServer {
   remaining: number;
 }
 
+function hostOf(v: unknown): string | null {
+  if (typeof v !== "string" || !v.trim()) return null;
+  try { return new URL(/^https?:\/\//.test(v) ? v : `https://${v}`).hostname; } catch { return v; }
+}
+
 async function describe(s: ServerRow): Promise<PublicServer> {
-  const domain = (() => {
-    try { return new URL(s.api_url).hostname; } catch { return s.api_url; }
-  })();
+  const apiHost = hostOf(s.api_url) ?? s.api_url;
   const createdToday = await countToday(s.id);
   let ip: string | null = null;
+  let serverDomain: string | null = null;
   let used: number | null = null;
   let total: number | null = s.bandwidth_total_gb != null ? Number(s.bandwidth_total_gb) : null;
   let reachable = false;
@@ -45,13 +49,16 @@ async function describe(s: ServerRow): Promise<PublicServer> {
     if (info && info.success !== false) {
       reachable = true;
       const i = info.info ?? info;
-      ip = typeof i.ip === "string" ? i.ip : null;
+      ip = typeof i.ip === "string" ? i.ip : typeof i.server_ip === "string" ? i.server_ip : null;
+      serverDomain = hostOf(i.domain) ?? hostOf(i.server_domain) ?? hostOf(i.hostname) ?? hostOf(i.host);
       const bw = i.bandwidth ?? {};
       used = num(i.bandwidth_used_gb) ?? num(bw.used_gb) ?? num(bw.used);
       total = total ?? num(i.bandwidth_total_gb) ?? num(bw.total_gb) ?? num(bw.total);
     }
   }
-  const geo = await geolocate(ip ?? domain);
+  // Server domain = the VPN host, not the API host (strip a leading "api." label).
+  const domain = serverDomain ?? apiHost.replace(/^api\./i, "");
+  const geo = await geolocate(ip ?? domain).then((g) => g ?? geolocate(apiHost));
   return {
     id: s.id,
     name: s.name,
@@ -60,7 +67,7 @@ async function describe(s: ServerRow): Promise<PublicServer> {
     domain,
     ip: ip ?? geo?.ip ?? null,
     country: geo?.country ?? null,
-    city: geo?.city ?? null,
+    city: geo?.city || geo?.region || null,
     flag: flagEmoji(geo?.code),
     bandwidthUsedGb: used,
     bandwidthTotalGb: total,

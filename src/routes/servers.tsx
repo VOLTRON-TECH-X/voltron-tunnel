@@ -64,8 +64,8 @@ function ServerCard({ s }: { s: PublicServer }) {
     <div className="surface p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="font-display text-lg font-semibold">{s.flag} {s.name}</p>
-          <p className="text-xs text-muted-foreground">{[s.city, s.country].filter(Boolean).join(", ") || "Unknown location"}</p>
+          <p className="font-display text-lg font-semibold tracking-wide">{s.flag} {s.country ? s.country.toUpperCase() : "LOCATING…"}</p>
+          <p className="text-xs text-muted-foreground">{[s.city, s.country].filter(Boolean).join(", ") || "Location unavailable"}</p>
         </div>
         <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${s.online ? "bg-success/15 text-success" : "bg-destructive/15 text-destructive"}`}>
           {s.online ? "● Online" : "● Offline"}
