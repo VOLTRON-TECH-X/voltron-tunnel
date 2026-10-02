@@ -75,18 +75,48 @@ export function flagEmoji(code?: string | null) {
   return String.fromCodePoint(...code.toUpperCase().split("").map((c) => 0x1f1e6 + c.charCodeAt(0) - 65));
 }
 
-export async function geolocate(ipOrHost: string) {
+async function getJson(url: string, ms = 5000): Promise<any> {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), ms);
   try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 5000);
-    const r = await fetch(`https://ipwho.is/${encodeURIComponent(ipOrHost)}`, { signal: ctrl.signal });
-    clearTimeout(t);
-    const j: any = await r.json();
-    if (!j.success) return null;
-    return { ip: j.ip as string, country: j.country as string, city: j.city as string, code: j.country_code as string };
+    const r = await fetch(url, { signal: ctrl.signal, headers: { Accept: "application/json, application/dns-json" } });
+    return await r.json();
   } catch {
     return null;
+  } finally {
+    clearTimeout(t);
   }
+}
+
+const IPV4 = /^\d{1,3}(\.\d{1,3}){3}$/;
+
+export async function resolveIp(host: string): Promise<string | null> {
+  if (IPV4.test(host) || host.includes(":")) return host;
+  const j = await getJson(`https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(host)}&type=A`);
+  const a = j?.Answer?.find((x: any) => x.type === 1);
+  return a?.data ?? null;
+}
+
+type Geo = { ip: string; country: string; city: string; region: string; code: string };
+const geoCache = new Map<string, Geo>();
+
+export async function geolocate(ipOrHost: string): Promise<Geo | null> {
+  const ip = (await resolveIp(ipOrHost)) ?? ipOrHost;
+  const cached = geoCache.get(ip);
+  if (cached) return cached;
+  let g: Geo | null = null;
+  const a = await getJson(`https://ipwho.is/${encodeURIComponent(ip)}`);
+  if (a?.success) g = { ip: a.ip, country: a.country, city: a.city, region: a.region, code: a.country_code };
+  if (!g) {
+    const b = await getJson(`https://ipapi.co/${encodeURIComponent(ip)}/json/`);
+    if (b && !b.error && b.country_name) g = { ip: b.ip, country: b.country_name, city: b.city, region: b.region, code: b.country_code };
+  }
+  if (!g) {
+    const c = await getJson(`http://ip-api.com/json/${encodeURIComponent(ip)}`);
+    if (c?.status === "success") g = { ip: c.query, country: c.country, city: c.city, region: c.regionName, code: c.countryCode };
+  }
+  if (g) geoCache.set(ip, g);
+  return g;
 }
 
 export function num(v: unknown): number | null {
