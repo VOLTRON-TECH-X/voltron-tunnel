@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
@@ -44,7 +44,13 @@ function CreatePage() {
   const [submitting, setSubmitting] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const [hasServer, setHasServer] = useState(true);
   useEffect(() => {
+    if (!getSelectedServerId()) {
+      setHasServer(false);
+      navigate({ to: "/servers" });
+      return;
+    }
     setLimitInfo(canCreateAccount());
     const enabled = getEnabledDurations();
     setDurations(enabled);
@@ -137,7 +143,10 @@ function CreatePage() {
           <span className="gradient-text">Create Free Account</span>
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Choose a username, a password, and your trial length.
+          Choose a username, a password, and your trial length.{" "}
+          <Link to="/servers" className="font-semibold text-primary underline-offset-2 hover:underline">
+            {hasServer ? "Change server" : "Choose a server first"}
+          </Link>
         </p>
 
         {!limitInfo ? (
