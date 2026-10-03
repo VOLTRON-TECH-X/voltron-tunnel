@@ -32,7 +32,12 @@ export function SiteContentManager() {
       toast.error("Add both a title and message");
       return;
     }
-    savePublicNotice({ id: editId ?? undefined, title: form.title.trim(), message: form.message.trim(), enabled: true });
+    savePublicNotice({
+      ...(editId ? { id: editId } : {}),
+      title: form.title.trim(),
+      message: form.message.trim(),
+      enabled: true,
+    });
     setForm(emptyNotice);
     setEditId(null);
     refresh();
