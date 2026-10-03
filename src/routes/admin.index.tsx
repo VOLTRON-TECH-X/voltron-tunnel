@@ -15,6 +15,7 @@ import {
 } from "@/lib/api";
 import { canCreateAccount, getDailyLimit, resetDailyState, setDailyLimit } from "@/lib/dailyLimit";
 import ServersManager from "@/components/admin/ServersManager";
+import SiteContentManager from "@/components/admin/SiteContentManager";
 import {
   getEnabledDurations,
   setEnabledDurations,
@@ -201,6 +202,8 @@ function Dashboard() {
       </section>
 
       <ServersManager onSelect={load} />
+
+      <SiteContentManager />
 
       {info && (
         <section className="rounded-xl border border-border bg-card p-4">

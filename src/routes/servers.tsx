@@ -1,5 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { Wifi } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -84,6 +86,7 @@ function ServersPage() {
 function ServerCard({ s }: { s: PublicServer }) {
   const navigate = useNavigate();
   const full = s.remaining <= 0;
+  const capacity = Math.min(100, (s.createdToday / Math.max(1, s.dailyLimit)) * 100);
   const bw = s.bandwidthTotalGb != null
     ? `${s.bandwidthUsedGb ?? 0} / ${s.bandwidthTotalGb} GB`
     : s.bandwidthUsedGb != null ? `${s.bandwidthUsedGb} GB used · Unlimited` : "Unlimited";
@@ -94,24 +97,36 @@ function ServerCard({ s }: { s: PublicServer }) {
           <p className="font-display text-lg font-semibold tracking-wide">{s.flag} {s.country ? s.country.toUpperCase() : "LOCATING…"}</p>
           <p className="text-xs text-muted-foreground">{[s.city, s.country].filter(Boolean).join(", ") || "Location unavailable"}</p>
         </div>
-        <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${s.online ? "bg-success/15 text-success" : "bg-destructive/15 text-destructive"}`}>
-          {s.online ? "● Online" : "● Offline"}
-        </span>
+        <div className="flex shrink-0 flex-col items-center gap-2">
+          <span className={`status-ripple rounded-full px-2.5 py-1 text-xs font-semibold ${s.online ? "is-online bg-success/15 text-success" : "bg-destructive/15 text-destructive"}`}>
+            <span className="relative z-10">● {s.online ? "Online" : "Offline"}</span>
+          </span>
+          <span className={`wifi-ripple grid size-8 place-items-center rounded-full ${s.online ? "is-online bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`} aria-label={s.online ? "Wi-Fi available" : "Wi-Fi unavailable"}>
+            <Wifi className="relative z-10 size-4" />
+          </span>
+        </div>
       </div>
       <dl className="mt-4 grid grid-cols-2 gap-x-3 gap-y-2 text-xs">
         <dt className="text-muted-foreground">Domain</dt><dd className="break-all text-right">{s.domain}</dd>
         <dt className="text-muted-foreground">IP</dt><dd className="break-all text-right">{s.ip ?? "—"}</dd>
         <dt className="text-muted-foreground">Bandwidth</dt><dd className="text-right">{bw}</dd>
-        <dt className="text-muted-foreground">Created today</dt><dd className="text-right">{s.createdToday}</dd>
-        <dt className="text-muted-foreground">Remaining</dt><dd className="text-right">{s.remaining} / {s.dailyLimit}</dd>
       </dl>
-      <button
+      <div className="mt-5 rounded-lg border border-border bg-secondary/45 p-3">
+        <div className="flex items-center justify-between gap-3 text-xs">
+          <span className="font-semibold">Daily account capacity</span>
+          <span className={full ? "font-semibold text-destructive" : "text-muted-foreground"}>{s.createdToday} created · {s.remaining} left</span>
+        </div>
+        <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-background shadow-inner" role="progressbar" aria-label="Daily account capacity used" aria-valuemin={0} aria-valuemax={s.dailyLimit} aria-valuenow={s.createdToday}>
+          <div className={`h-full rounded-full transition-[width] duration-700 ${full ? "bg-destructive" : "gradient-brand"}`} style={{ width: `${capacity}%` }} />
+        </div>
+      </div>
+      <Button
         disabled={!s.online || full}
         onClick={() => { setSelectedServerId(s.id); navigate({ to: "/create" }); }}
-        className="mt-5 w-full rounded-xl gradient-brand py-2.5 text-sm font-semibold text-primary-foreground shadow-glow transition-transform hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100"
+        className="mt-4 h-11 w-full gradient-brand font-semibold shadow-glow transition-transform hover:scale-[1.02] disabled:hover:scale-100"
       >
         {!s.online ? "Server offline" : full ? "Full today" : "Create account"}
-      </button>
+      </Button>
     </div>
   );
 }
