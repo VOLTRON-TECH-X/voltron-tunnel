@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { getEnabledDurations, type TrialDuration } from "@/lib/durationConfig";
+import { getPublicNotices, type PublicNotice } from "@/lib/siteConfig";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,15 +35,20 @@ const features = [
 
 function Home() {
   const [durations, setDurations] = useState<TrialDuration[]>([1, 3, 7]);
+  const [notices, setNotices] = useState<PublicNotice[]>([]);
 
   useEffect(() => {
     const sync = () => setDurations(getEnabledDurations());
+    const syncNotices = () => setNotices(getPublicNotices().filter((notice) => notice.enabled));
     sync();
+    syncNotices();
     window.addEventListener("storage", sync);
     window.addEventListener("voltron-duration-change", sync);
+    window.addEventListener("voltron-site-config-change", syncNotices);
     return () => {
       window.removeEventListener("storage", sync);
       window.removeEventListener("voltron-duration-change", sync);
+      window.removeEventListener("voltron-site-config-change", syncNotices);
     };
   }, []);
 
@@ -92,6 +98,26 @@ function Home() {
             </div>
           </div>
         </section>
+
+        {notices.length > 0 && (
+          <section className="mx-auto max-w-4xl px-4 pt-10" aria-label="Latest information">
+            <div className="mb-4 flex items-center gap-3">
+              <span className="grid size-9 place-items-center rounded-lg bg-primary/15 text-lg" aria-hidden="true">📢</span>
+              <div>
+                <h2 className="font-display text-xl font-bold">Latest information</h2>
+                <p className="text-xs text-muted-foreground">Updates from Voltron Tunnel</p>
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {notices.map((notice) => (
+                <article key={notice.id} className="surface border-l-4 border-l-primary p-5">
+                  <h3 className="font-display font-semibold">{notice.title}</h3>
+                  <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-muted-foreground">{notice.message}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="mx-auto grid max-w-6xl gap-4 px-4 py-14 sm:grid-cols-2 lg:grid-cols-4">
           {features.map((f) => (
