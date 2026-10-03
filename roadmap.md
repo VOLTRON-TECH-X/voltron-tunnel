@@ -7,3 +7,7 @@
 - [ ] Add Dynamic SSH Banner status and actions to the admin panel.
 - [ ] Automatically enable and refresh Dynamic SSH Banner after account creation.
 - [ ] Apply the pale-blue professional theme and verify desktop/mobile views and build status.
+- [ ] Replace server account counts with a wide, filling capacity bar.
+- [ ] Add animated ripple status and Wi-Fi indicators to server cards.
+- [ ] Add admin-managed Telegram, WhatsApp, and public announcements.
+- [ ] Verify the new server and public-information views on desktop and mobile.
