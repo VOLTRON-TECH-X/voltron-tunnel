@@ -43,6 +43,21 @@ export type Database = {
           },
         ]
       }
+      admin_credentials: {
+        Row: {
+          password_hash: string
+          username: string
+        }
+        Insert: {
+          password_hash: string
+          username: string
+        }
+        Update: {
+          password_hash?: string
+          username?: string
+        }
+        Relationships: []
+      }
       servers: {
         Row: {
           api_key: string
@@ -79,12 +94,43 @@ export type Database = {
         }
         Relationships: []
       }
+      site_state: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      admin_set_state: {
+        Args: {
+          p_key: string
+          p_password: string
+          p_username: string
+          p_value: Json
+        }
+        Returns: boolean
+      }
+      admin_verify: {
+        Args: { p_password: string; p_username: string }
+        Returns: boolean
+      }
+      increment_server_count: { Args: { p_server_id: string }; Returns: number }
     }
     Enums: {
       [_ in never]: never
