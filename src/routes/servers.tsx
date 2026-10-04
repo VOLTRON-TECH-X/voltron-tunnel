@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Wifi } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -97,12 +96,9 @@ function ServerCard({ s }: { s: PublicServer }) {
           <p className="font-display text-lg font-semibold tracking-wide">{s.flag} {s.country ? s.country.toUpperCase() : "LOCATING…"}</p>
           <p className="text-xs text-muted-foreground">{[s.city, s.country].filter(Boolean).join(", ") || "Location unavailable"}</p>
         </div>
-        <div className="flex shrink-0 flex-col items-center gap-2">
-          <span className={`status-ripple rounded-full px-2.5 py-1 text-xs font-semibold ${s.online ? "is-online bg-success/15 text-success" : "bg-destructive/15 text-destructive"}`}>
+        <div className="shrink-0">
+          <span className={`status-ripple rounded-full px-4 py-2 text-base font-bold ${s.online ? "is-online bg-success/15 text-success" : "bg-destructive/15 text-destructive"}`}>
             <span className="relative z-10">● {s.online ? "Online" : "Offline"}</span>
-          </span>
-          <span className={`wifi-ripple grid size-8 place-items-center rounded-full ${s.online ? "is-online bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`} aria-label={s.online ? "Wi-Fi available" : "Wi-Fi unavailable"}>
-            <Wifi className="relative z-10 size-4" />
           </span>
         </div>
       </div>
