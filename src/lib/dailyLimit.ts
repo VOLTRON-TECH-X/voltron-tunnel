@@ -1,3 +1,5 @@
+import { pushKey } from "./cloudSync";
+
 const LIMIT_KEY = "voltron_daily_limit";
 const CONFIG_KEY = "voltron_daily_config";
 const DEFAULT_LIMIT = parseInt(import.meta.env['VITE_DEFAULT_DAILY_LIMIT'] || "10", 10);
@@ -31,6 +33,7 @@ export function setDailyLimit(newLimit: number): void {
   if (newLimit < 1 || newLimit > 1000) return;
   const config: DailyConfig = { limit: newLimit, lastUpdated: Date.now() };
   localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+  void pushKey("voltron_daily_config");
 }
 
 export function getDailyState(): DailyState {

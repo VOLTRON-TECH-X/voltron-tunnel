@@ -124,6 +124,18 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    let alive = true;
+    const run = () =>
+      import("../lib/cloudSync").then(({ syncFromCloud }) =>
+        syncFromCloud().then((ok) => { if (ok && alive) void queryClient.invalidateQueries(); }),
+      );
+    void run();
+    const id = window.setInterval(run, 60_000);
+    return () => { alive = false; window.clearInterval(id); };
+  }, [queryClient]);
+
+
   return (
     <QueryClientProvider client={queryClient}>
       <div aria-hidden="true" className="globe-backdrop">

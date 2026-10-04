@@ -1,5 +1,6 @@
 // Browser-stored server list (API domain + key). Works on any host (Vercel, Lovable…).
 import { getSelectedServerId } from "./apiConfig";
+import { incrementCloudCount, pushKey } from "./cloudSync";
 
 export type LocalServer = {
   id: string;
@@ -41,6 +42,7 @@ export function listServers(): LocalServer[] {
 function write(list: LocalServer[]) {
   localStorage.setItem(KEY, JSON.stringify(list));
   window.dispatchEvent(new Event("voltron-server-change"));
+  void pushKey("voltron_servers");
 }
 
 export function saveServer(s: Omit<LocalServer, "id" | "created_at" | "enabled"> & { id?: string | undefined }) {
@@ -75,4 +77,5 @@ export function incrementServerCount(id: string) {
   const c = counts();
   c[id] = { day: today(), n: countToday(id) + 1 };
   localStorage.setItem(COUNT_KEY, JSON.stringify(c));
+  void incrementCloudCount(id);
 }
