@@ -275,18 +275,11 @@
   70%, 100% { box-shadow: 0 0 0 10px transparent; }
 }
 
-@keyframes wifi-ripple {
-  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-primary) 35%, transparent); }
-  70%, 100% { box-shadow: 0 0 0 12px transparent; }
-}
-
 @utility status-ripple { position: relative; }
-@utility wifi-ripple { position: relative; }
 .status-ripple.is-online { animation: status-ripple 2s ease-out infinite; }
-.wifi-ripple.is-online { animation: wifi-ripple 2s ease-out 0.55s infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-spin-slow, .animate-float, .animate-pulse-glow, .brand-heartbeat, .brand-shine-sweep, .globe-sphere, .status-ripple.is-online, .wifi-ripple.is-online {
+  .animate-spin-slow, .animate-float, .animate-pulse-glow, .brand-heartbeat, .brand-shine-sweep, .globe-sphere, .status-ripple.is-online {
     animation: none;
   }
 }
