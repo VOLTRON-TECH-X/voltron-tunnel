@@ -1,3 +1,5 @@
+import { pushKey } from "./cloudSync";
+
 export type ContactConfig = {
   telegram: string;
   whatsapp: string;
@@ -30,6 +32,8 @@ function readJson<T>(key: string, fallback: T): T {
 }
 
 function notify() {
+  void pushKey("voltron_contact_config");
+  void pushKey("voltron_public_notices");
   window.dispatchEvent(new Event("voltron-site-config-change"));
 }
 

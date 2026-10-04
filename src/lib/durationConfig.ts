@@ -1,3 +1,5 @@
+import { pushKey } from "./cloudSync";
+
 const DURATION_CONFIG_KEY = "voltron_duration_config";
 
 export const TRIAL_DURATIONS = [1, 3, 7] as const;
@@ -27,5 +29,6 @@ export function setEnabledDurations(durations: TrialDuration[]): boolean {
 
   localStorage.setItem(DURATION_CONFIG_KEY, JSON.stringify(valid));
   window.dispatchEvent(new Event("voltron-duration-change"));
+  void pushKey("voltron_duration_config");
   return true;
 }
