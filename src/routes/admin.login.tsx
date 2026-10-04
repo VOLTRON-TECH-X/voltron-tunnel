@@ -29,6 +29,7 @@ function AdminLogin() {
     e.preventDefault();
     if (adminLogin(username.trim(), password)) {
       toast.success("Welcome back, admin");
+      void import("@/lib/cloudSync").then((m) => m.syncFromCloud());
       navigate({ to: "/admin" });
     } else {
       toast.error("Invalid username or password");
